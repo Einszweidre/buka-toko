@@ -1,5 +1,6 @@
 const { Product, Category,Profile,Transaction,ProductsTransaction,User } = require('../models')
 const bcrypt = require('bcrypt')
+const rupiah = require('../helpers/rupiahFormat')
 
 class Controller{
     static sellerHome(req, res){
@@ -13,34 +14,102 @@ class Controller{
                 username
             }
         })
-            .then((user) => {
-                if(user){
-                    const compare=bcrypt.compareSync(password,user.password)
-                    if(compare){
-                        if(user.role !== "Seller"){
-                            const error = "not a seller account"
-                            return res.redirect(`/seller?error=${error}`)
-                        }
-                        req.session.userId = user.id
-                        req.session.role = user.role
-                        return res.redirect('/seller/dashboard') //buyer atau seller role
-                    } else{
-                        const error = "invalid password"
+        .then((user) => {
+            if(user){
+                const compare=bcrypt.compareSync(password,user.password)
+                if(compare){
+                    if(user.role !== "Seller"){
+                        const error = "not a seller account"
                         return res.redirect(`/seller?error=${error}`)
                     }
+                    req.session.userId = user.id
+                    req.session.role = user.role
+                    return res.redirect('/seller/dashboard') //buyer atau seller role
                 } else{
-                    const error = "username not found"
+                    const error = "invalid password"
                     return res.redirect(`/seller?error=${error}`)
                 }
-            })
-            .catch((err) => {
-                console.log(err);
-                res.send(err)
-            })
+            } else{
+                const error = "username not found"
+                return res.redirect(`/seller?error=${error}`)
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
     }
 
     static sellerDashboard(req,res){
-        res.render('seller-dashboard')
+        Product.findAll({
+            include:{
+                model: Category
+            }
+        })
+        .then((products)=>{
+            res.render('seller-dashboard', {products, rupiah})
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
+    }
+
+    static transactionList(req, res){
+
+    }
+
+    static productDetail(req, res){
+        const id = req.params.id
+        Product.findOne(id,{
+            include:{
+                model: Category
+            }
+        })
+        .then((product)=>{
+            res.send(product)
+            res.render('product-detail', {product, rupiah})
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
+    }
+
+    static addProduct(req, res){
+        Category.findAll()
+        .then((categories)=>{
+            res.render("seller-product-add", {categories})
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
+    }
+
+    static createProduct(req, res){
+        const {name, description, price, CategoryId, picture} = req.body
+        const SellerId = req.session.UserId
+        Product.create({name, description, price,SellerId, CategoryId, picture})
+        .then(()=>{
+            res.redirect("/seller/dashboard")
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
+    }
+
+    static editProduct(req, res){
+
+    }
+
+    static postProduct(req, res){
+
+    }
+
+    static transactionList(req, res){
+
     }
 
     static logout(req,res){

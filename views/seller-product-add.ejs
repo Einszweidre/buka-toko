@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <%- include('./partials/style.ejs') %>
+</head>
+<body>
+    <%- include('./partials/header.ejs') %>
+    <div>
+        <h2>Add Product</h2>
+    </div>
+    <div>
+        <form action="/seller/product/add" method="post">
+            <div>
+                <p>
+                    <label for="name">Name:</label><br>
+                    <input type="text" id="name" name="name" value="">
+                </p>
+                <p>
+                    <label for="description">Description: </label><br>
+                    <textarea id="description" name="description" rows="3" cols="60"></textarea>
+                </p>
+                <p>
+                    <label for="price">Price:</label><br>
+                    <input type="number" id="price" name="price" value="">
+                </p>
+                <p>
+                    <label for="CategoryId">Category:</label><br>
+                    <select name="CategoryId">
+                        <% categories.forEach(element => { %>
+                            <option value="<%= element.id %>"><%= element.name %></option>
+                        <% }) %>
+                    </select>
+                </p>
+                <p>
+                    <label for="picture">Picture Link:</label><br>
+                    <input type="text" id="picture" name="picture" value="">
+                </p>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
