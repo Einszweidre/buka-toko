@@ -3,6 +3,14 @@ const Controller = require('../controllers/buyer-controller')
 
 router.get("/", Controller.buyerHome)
 router.post("/",Controller.loginPost)
-
-router.get("/product", Controller.showProducts)
+router.get("/dashboard", Controller.buyerDashboard)
+router.get("/profile", Controller.buyerProfile)
+router.get("/profile/edit", Controller.editProfile)
+router.post("/profile/edit", Controller.profilePost)
+router.get("/cart", Controller.cart)
+router.get("/productdetail/:id", Controller.productDetail)
+router.get("/checkout", Controller.checkout)
+router.get("/payment", Controller.payment)
+router.get("/transactions", Controller.transactions)
+router.post("/payment", Controller.paymentPost)
 module.exports = router

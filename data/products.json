@@ -1,0 +1,22 @@
+[
+	{
+		"id" : 1,
+		"name" : "Kaos",
+		"description" : "Kaos casual putih",
+		"price" : 50000,
+		"SellerId" : 2,
+		"CategoryId" : 1,
+		"createdAt" : "2023-05-11T09:31:43.847Z",
+		"updatedAt" : "2023-05-11T09:31:43.847Z"
+	},
+	{
+		"id" : 2,
+		"name" : "Samsung S23",
+		"description" : "Samsung S23 8\/256",
+		"price" : 3000000,
+		"SellerId" : 2,
+		"CategoryId" : 2,
+		"createdAt" : "2023-05-11T09:32:37.021Z",
+		"updatedAt" : "2023-05-11T09:32:37.021Z"
+	}
+]

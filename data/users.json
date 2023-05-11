@@ -1,0 +1,18 @@
+[
+	{
+		"id" : 1,
+		"username" : "buyer1",
+		"password" : "$2b$08$gfixdN\/jiqCY1GaQO\/Scv.IeggDfxT2GO8Ou6rQ1hbd1fJ3MKXplG",
+		"role" : "Buyer",
+		"createdAt" : "2023-05-11T07:05:54.759Z",
+		"updatedAt" : "2023-05-11T07:05:54.759Z"
+	},
+	{
+		"id" : 2,
+		"username" : "seller1",
+		"password" : "$2b$08$gfixdN\/jiqCY1GaQO\/Scv.IeggDfxT2GO8Ou6rQ1hbd1fJ3MKXplG",
+		"role" : "Seller",
+		"createdAt" : "2023-05-11T09:28:34.673Z",
+		"updatedAt" : "2023-05-11T09:28:34.673Z"
+	}
+]
