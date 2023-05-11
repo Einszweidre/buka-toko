@@ -13,6 +13,9 @@
         <h2>Seller Login</h2>
     </div>
     <div>
+        <% if (error) { %>
+            <p style="color: red;"><%= error  %></p>
+        <% } %>
         <form action="/seller" method="post">
             <div>
                 <p>
