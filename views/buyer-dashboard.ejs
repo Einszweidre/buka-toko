@@ -22,14 +22,14 @@
     </div><br>
     <div>
         <form action="/buyer/dashboard" method="get">
-            <a>
+            <p style="width: 20%;">
                 <select name="CategoryId" id="">
                     <option disabled selected>Category</option>
                     <% categories.forEach(el => { %>
                         <option value=<%=el.id%>><%= el.name %></option>
                     <% }) %>
                 </select>
-            </a>
+            </p>
             <a> <button class="btnFilter" type="submit">Sort</button></a>
         </form>
     </div>
@@ -40,7 +40,15 @@
                 <img src="https://media.suara.com/suara-partners/metro/thumbs/653x367/2023/03/02/1-hotman-paris.jpg" alt="" width=200></img>
                 <p>Price: <%- el.rupiahFormat %></p>
                 <a href="/productdetail/<%=el.id%>"><button>Detail product</button></a>
-                <a href="/"><button>Add to cart</button></a>
+                <form action="/buyer/dashboard" method="post">
+                    <div>
+                        <input type="hidden" name="name" value="<%= el.name %>">
+                        <input type="hidden" name="price" value="<%=el.price  %>">
+                        <input type="hidden" name="id" value="<%=el.id  %>">
+                        <input type="hidden" name="CategoryId" value="<%= el.CategoryId %>">
+                        <button type="submit">Add to cart</button>
+                    </div>
+                </form>
             </div>
         <% }) %>
     </div>

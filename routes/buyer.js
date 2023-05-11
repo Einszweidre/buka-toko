@@ -5,10 +5,9 @@ router.get("/", Controller.buyerHome)
 router.post("/",Controller.loginPost)
 router.use((req, res, next) => {
     console.log(req.session)
-
     if(!req.session.userId){
         const error = "Session not found, please login"
-        res.redirect(`/seller?error=${error}`)
+        res.redirect(`/buyer?error=${error}`)
     } else{
         next()
     }
@@ -16,6 +15,7 @@ router.use((req, res, next) => {
 router.get("/profile/add", Controller.addProfile)
 router.post("/profile/add", Controller.addProfilePost)
 router.get("/dashboard", Controller.buyerDashboard)
+router.post("/dashboard", Controller.addToCart)
 router.get("/profile/edit", Controller.editProfile)
 router.post("/profile/edit", Controller.editProfilePost)
 router.get("/cart", Controller.cart)

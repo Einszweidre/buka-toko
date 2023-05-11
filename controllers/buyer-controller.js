@@ -1,5 +1,6 @@
 const { Product, Category,Profile,Transaction,ProductsTransaction,User } = require('../models')
 const bcrypt = require('bcrypt')
+const rupiahFormat=require('../helpers/rupiahFormat')
 
 class Controller {
     static buyerHome(req, res) {
@@ -74,7 +75,36 @@ class Controller {
         })
     }
 
+    static addToCart(req, res) {
+        const{id,name,price,CategoryId}=req.body
+        const {cart}=req.session
+        if (req.body.name) {
+            let product={
+                id,
+                name,
+                price,
+                CategoryId,
+                quantity:1
+            }
+            const find=cart.find((el) => el.name==name)
+            if(find){
+               find.quantity++
+            } else {
+                req.session.cart.push(product);
+            }
+            res.redirect('/buyer/dashboard');
+        }
+    }
+
     static buyerDashboard(req, res) {
+        //cart
+        if (req.session.cart) {
+            const itemsInCart = req.session.cart.length;
+        } else {
+            req.session.cart = [];
+        }
+
+        //dashboard
         const id=req.session.userId
         let user
         let categories
@@ -155,7 +185,12 @@ class Controller {
     }
 
     static cart(req, res) {
-        res.render('buyer-cart')
+        const {cart}=req.session
+        let totalPrice=0
+        cart.forEach(el => {
+            totalPrice+= +el.price*el.quantity
+        });
+        res.render('buyer-cart',{cart,totalPrice ,rupiahFormat})
     }
 
     static payment(req, res) {
