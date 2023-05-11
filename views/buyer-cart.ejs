@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Profile</title>
+    <%- include('./partials/style.ejs') %>
+</head>
+<body>
+    <%- include('./partials/header-buyer.ejs') %>
+    <h1>Your Shopping Cart</h1>
+    <div>
+        <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% cart.forEach(el => { %>
+                  <tr>
+                      <th><%=el.name%></th>
+                      <th><%=rupiahFormat(+el.price)%></th>
+                      <th><%=el.quantity  %></th>
+                      <th><%=rupiahFormat(el.quantity*el.price )%></th>
+                    </tr>
+              <% }) %>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="total">Total:</td>
+                <td><%= rupiahFormat(totalPrice) %></td>
+              </tr>
+            </tfoot>
+          </table>
+          <button>Checkout</button>
+    </div>
+</body>
+</html>
