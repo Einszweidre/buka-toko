@@ -14,11 +14,24 @@
     </div>
    
     <div>
-        <a href="/buyer/profile"><button class="btn" >View profile</button></a>
+        <a href="/buyer/profile/edit"><button class="btn" >View profile</button></a>
     </div>
     <div>
         <a href="/buyer/cart"><button>Cart</button></a> 
         <a href="/buyer/transactions"><button>Transactions</button></a>
+    </div><br>
+    <div>
+        <form action="/buyer/dashboard" method="get">
+            <a>
+                <select name="CategoryId" id="">
+                    <option disabled selected>Category</option>
+                    <% categories.forEach(el => { %>
+                        <option value=<%=el.id%>><%= el.name %></option>
+                    <% }) %>
+                </select>
+            </a>
+            <a> <button class="btnFilter" type="submit">Sort</button></a>
+        </form>
     </div>
     <div>
         <table>
@@ -31,8 +44,8 @@
                 </tr>
             </thead>
             <tbody>
-                <% if (Product.length>1) { %>
-                    <% Product.forEach(el => { %>
+                <% if (products.length>0) { %>
+                    <% products.forEach(el => { %>
                         <tr>
                             <td><%=el.name%></td>
                             <td><%='-'%></td>
