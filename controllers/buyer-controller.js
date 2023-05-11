@@ -6,7 +6,8 @@ const fs = require('fs');
 
 class Controller {
     static buyerHome(req, res) {
-        res.render('buyer')
+        const { error } = req.query
+        res.render('buyer', { error })
     }
 
     static loginPost(req, res) {
@@ -22,7 +23,7 @@ class Controller {
                     if (compare) {
                         if (user.role !== "Buyer") {
                             const error = "not a buyer account"
-                            return res.redirect(`/buyer?error=${error}`)
+                             res.redirect(`/buyer?error=${error}`)
                         }
                         req.session.userId = user.id
                         req.session.role = user.role
@@ -30,21 +31,22 @@ class Controller {
                         return Profile.findOne({
                             where: {
                                 UserId: user.id
-                            }
+                            } 
                         })
                     } else {
                         const error = "invalid password"
-                        return res.redirect(`/buyer?error=${error}`)
+                         res.redirect(`/buyer?error=${error}`)
                     }
                 } else {
                     const error = "username not found"
-                    return res.redirect(`/buyer?error=${error}`)
+                     res.redirect(`/buyer?error=${error}`)
                 }
             })
             .then(profile => {
                 if (!profile) {
                     res.redirect('/buyer/profile/add')
                 } else {
+                    req.session.address=profile.address
                     res.redirect('/buyer/dashboard')
                 }
             })
@@ -126,12 +128,12 @@ class Controller {
         if (req.session.cart) {
             itemsInCart = req.session.cart.length;
         } else {
+            itemsInCart = 0
             req.session.cart = [];
         }
         //dashboard
         const { name } = req.session
         let categories
-
         Category.findAll()
             .then((categoriesList) => {
                 categories = categoriesList
@@ -146,7 +148,7 @@ class Controller {
                 return Product.findAll(option)
             })
             .then((products) => {
-                res.render('buyer-dashboard', { products, categories, name ,itemsInCart})
+                res.render('buyer-dashboard', { products, categories, name, itemsInCart })
             })
             .catch((err) => {
                 console.log(err);
@@ -195,7 +197,45 @@ class Controller {
     }
 
     static checkout(req, res) {
-       
+        const UserId = req.session.userId
+        const address=req.session.address
+        if (req.session.cart.length > 0) {
+            Transaction.create({
+                paymentDate: new Date(),
+                status:'Pending',
+                UserId,
+                deliveryAddress:address
+            })
+            .then(()=>{
+               return Transaction.findOne({
+                    where: {
+                        UserId,
+                    },
+                    order: [['id', 'DESC']],
+                    limit: 1
+                })
+            })
+            .then((transaction)=>{
+                console.log(transaction);
+                const cart=req.session.cart
+                cart.forEach(el => {
+                    el.TransactionId=transaction.id
+                    el.ProductId=el.id
+                    el.amount= +el.quantity * +el.price
+                    delete el.CategoryId
+                    delete el.id
+                    delete el.name
+                }); 
+                return ProductsTransaction.bulkCreate(cart)
+            })
+            .then(()=>{
+                res.redirect('/buyer/payment')
+            })
+        } else {
+            const error = "Cart is empty"
+            return res.redirect(`/buyer/cart?error=${error}`)
+        }
+
     }
 
     static productDetail(req, res) {
@@ -211,20 +251,14 @@ class Controller {
     }
 
     static cart(req, res) {
-        const { cart } = req.session
+        console.log(req.session.cart);
+        const { error } = req.query
+        const cart = req.session.cart
         let totalPrice = 0
         cart.forEach(el => {
             totalPrice += +el.price * el.quantity
         });
-        res.render('buyer-cart', { cart, totalPrice, rupiahFormat })
-    }
-
-    static payment(req, res) {
-        res.render('buyer-payment')
-    }
-
-    static paymentPost(req, res) {
-        res.redirect('/transactions')
+        res.render('buyer-cart', { cart, totalPrice, rupiahFormat, error })
     }
 
     static transactions(req, res) {
