@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      ProductsTransaction.belongsTo(models.Product);
+      ProductsTransaction.belongsTo(models.Transaction);
+
     }
   }
   ProductsTransaction.init({

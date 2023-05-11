@@ -26,7 +26,7 @@ router.post("/product/add", Controller.createProduct)
 router.get("/product/edit/:id", Controller.editProduct)
 router.post("/product/edit/:id", Controller.postProduct)
 
-router.get("/product/delete/:id", Controller.transactionList)
+router.get("/product/delete/:id", Controller.deleteProduct)
 
 router.get("/logout", Controller.logout)
 

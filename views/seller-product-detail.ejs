@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Product Detail</title>
+    <title><%= product.name %> - Product Detail</title>
     <%- include('./partials/style.ejs') %>
     <%- include('./partials/table-style.ejs') %>
+    <%- include('./partials/seller-product-detail.ejs') %>
 </head>
 <body>
-    <%- include('./partials/header-seller.ejs') %>
-    
+    <%- include('./partials/header-seller.ejs') %> <br><br>
+    <div class="product-detail">
+        <img src="<%= product.picture %>" alt="<%= product.name %>">
+        <div>
+            <h1><%= product.name %></h1>
+            <p class="price"><%= product.description %></p>
+            <p class="category">Price: Rp <%= rupiah(product.price) %></p>
+            <p class="description">Category: <%= product.Category.name %></p>
+
+            <button onclick="window.location.href='/seller/product/edit/<%= product.id %>'">Edit</button>
+            <button onclick="window.location.href='/seller/product/delete/<%= product.id %>'">Delete</button>
+        </div>
+    </div>
 </body>
 </html>
