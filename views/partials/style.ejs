@@ -1,8 +1,11 @@
 <style>
-    p,a,h2,h3  {
+    p,
+    a,
+    h2,
+    h3 {
         font-family: Arial, sans-serif;
     }
-    
+
     table {
         font-family: arial, sans-serif;
         border-collapse: collapse;
@@ -42,7 +45,7 @@
         box-sizing: border-box;
     }
 
-    textarea{
+    textarea {
         width: 100%;
         padding: 12px 20px;
         margin: 8px 0;
@@ -60,6 +63,7 @@
         text-decoration: none;
         margin: 4px 2px;
         cursor: pointer;
+
     }
 
     div {
@@ -67,15 +71,47 @@
     }
 
     .card {
-      width: 300px;
-      height: 340px;
-      background-color: #f0f0f0;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin: 10px;
-      display: inline-block;
+        width: 300px;
+        height: auto;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 10px;
+        display: inline-block;
     }
 
-    
+    img {
+        width: 256px;
+        height: 256px;
+        border: 1px solid #04AA6D;
+    }
+
+    .none {
+        /* Image is not scaled */
+        object-fit: none;
+    }
+
+    .fill {
+        /* Image is scaled to fill the container. */
+        /* Aspect ratio IS NOT maintained */
+        object-fit: fill;
+    }
+
+    .cover {
+        /* Image is scaled to fill the container. */
+        /* Aspect ratio IS maintained */
+        object-fit: cover;
+    }
+
+    .contain {
+        /* Image is scaled to fit within the container. */
+        /* Aspect ratio IS maintained */
+        object-fit: contain;
+    }
+
+    .scale-down {
+        /* Uses either 'none' or 'contain' to produce the smallest image size */
+        object-fit: scale-down;
+    }
 </style>

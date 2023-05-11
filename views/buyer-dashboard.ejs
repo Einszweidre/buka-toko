@@ -10,7 +10,7 @@
 <body>
     <%- include('./partials/header-buyer.ejs') %>
     <div>
-        <h2>Dashboard</h2>
+        <h3>Hello <%= name %> ! , selamat berbelanja</h3>
     </div>
    
     <div>
@@ -18,12 +18,12 @@
     </div>
     
     <div style="display: flex; justify-content: flex-end;">
-        <a href="/buyer/cart"><button>Cart</button></a> 
+        <a href="/buyer/cart"><button>Cart (<%= itemsInCart %>)</button></a> 
         <a href="/buyer/transactions"><button>Transactions</button></a>
     </div><br>
-    <div>
+    <div style="display: flex; justify-content:left;">
         <form action="/buyer/dashboard" method="get">
-            <p style="width: 20%;">
+            <p >
                 <select name="CategoryId" id="">
                     <option disabled selected>Category</option>
                     <% categories.forEach(el => { %>
@@ -38,7 +38,7 @@
         <% products.forEach(el => { %>
             <div class="card">
                 <h2><%= el.name %></h2>
-                <img src="https://media.suara.com/suara-partners/metro/thumbs/653x367/2023/03/02/1-hotman-paris.jpg" alt="" width=200></img>
+                <img src="<%= el.picture %>" alt="" ></img>
                 <p>Price: <%- el.rupiahFormat %></p>
                 <a href="/productdetail/<%=el.id%>"><button>Detail product</button></a>
                 <form action="/buyer/dashboard" method="post">

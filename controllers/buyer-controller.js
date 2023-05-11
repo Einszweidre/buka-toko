@@ -1,6 +1,8 @@
-const { Product, Category,Profile,Transaction,ProductsTransaction,User } = require('../models')
+const { Product, Category, Profile, Transaction, ProductsTransaction, User } = require('../models')
 const bcrypt = require('bcrypt')
-const rupiahFormat=require('../helpers/rupiahFormat')
+const rupiahFormat = require('../helpers/rupiahFormat')
+const easyinvoice = require('easyinvoice');
+const fs = require('fs');
 
 class Controller {
     static buyerHome(req, res) {
@@ -18,15 +20,16 @@ class Controller {
                 if (user) {
                     const compare = bcrypt.compareSync(password, user.password)
                     if (compare) {
-                        if(user.role !== "Buyer"){
+                        if (user.role !== "Buyer") {
                             const error = "not a buyer account"
                             return res.redirect(`/buyer?error=${error}`)
                         }
                         req.session.userId = user.id
                         req.session.role = user.role
+                        req.session.name = user.username
                         return Profile.findOne({
-                            where:{
-                                UserId:user.id
+                            where: {
+                                UserId: user.id
                             }
                         })
                     } else {
@@ -38,8 +41,8 @@ class Controller {
                     return res.redirect(`/buyer?error=${error}`)
                 }
             })
-            .then(profile=>{
-                if(!profile){
+            .then(profile => {
+                if (!profile) {
                     res.redirect('/buyer/profile/add')
                 } else {
                     res.redirect('/buyer/dashboard')
@@ -52,20 +55,20 @@ class Controller {
     }
 
     static addProfile(req, res) {
-        const id=req.session.userId
+        const id = req.session.userId
         User.findByPk(id)
-        .then(user=>{
-            res.render('add-profile',{user,id})
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send(err)
-        })
+            .then(user => {
+                res.render('add-profile', { user, id })
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(err)
+            })
     }
 
     static addProfilePost(req, res) {
-        const UserId=req.session.userId
-        const {name,address,email,phoneNumber}=req.body
+        const UserId = req.session.userId
+        const { name, address, email, phoneNumber } = req.body
         Profile.create({
             name,
             address,
@@ -73,29 +76,29 @@ class Controller {
             phoneNumber,
             UserId
         })
-        .then(_=>{
-            res.redirect('/buyer/dashboard')
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send(err)
-        })
+            .then(_ => {
+                res.redirect('/buyer/dashboard')
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(err)
+            })
     }
 
     static addToCart(req, res) {
-        const{id,name,price,CategoryId}=req.body
-        const {cart}=req.session
+        const { id, name, price, CategoryId } = req.body
+        const { cart } = req.session
         if (req.body.name) {
-            let product={
+            let product = {
                 id,
                 name,
                 price,
                 CategoryId,
-                quantity:1
+                quantity: 1
             }
-            const find=cart.find((el) => el.name==name)
-            if(find){
-               find.quantity++
+            const find = cart.find((el) => el.name == name)
+            if (find) {
+                find.quantity++
             } else {
                 req.session.cart.push(product);
             }
@@ -104,76 +107,72 @@ class Controller {
     }
 
     static updateQuantity(req, res) {
-        let {cart}=req.session
-        const{quantity,index}=req.body
-        cart[index].quantity=quantity
+        let { cart } = req.session
+        const { quantity, index } = req.body
+        cart[index].quantity = quantity
         res.redirect('/buyer/cart')
     }
 
     static deleteCart(req, res) {
-       const deleteItem=req.query.item
-       let {cart}=req.session
-       req.session.cart=cart.filter(el=>el.name!==deleteItem)
-       res.redirect('/buyer/cart')
+        const deleteItem = req.query.item
+        let { cart } = req.session
+        req.session.cart = cart.filter(el => el.name !== deleteItem)
+        res.redirect('/buyer/cart')
     }
 
     static buyerDashboard(req, res) {
         //cart
+        let itemsInCart
         if (req.session.cart) {
-            const itemsInCart = req.session.cart.length;
+            itemsInCart = req.session.cart.length;
         } else {
             req.session.cart = [];
         }
-
         //dashboard
-        const id=req.session.userId
-        let user
+        const { name } = req.session
         let categories
-        User.findByPk(id)
-        .then(userFound=>{
-            user=userFound
-           return Category.findAll()
-        })
-        .then((categoriesList)=>{
-            categories=categoriesList
-            let option={}
-            if (req.query.CategoryId) {
-                const { CategoryId } = req.query
-                option.where = {
-                    CategoryId
+
+        Category.findAll()
+            .then((categoriesList) => {
+                categories = categoriesList
+                let option = {}
+                if (req.query.CategoryId) {
+                    const { CategoryId } = req.query
+                    option.where = {
+                        CategoryId
+                    }
                 }
-            }
-            console.log(option);
-            return Product.findAll(option)
-        })
-        .then((products)=>{
-            res.render('buyer-dashboard', { products,categories,user })
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send(err)
-        })
+                console.log(option);
+                return Product.findAll(option)
+            })
+            .then((products) => {
+                res.render('buyer-dashboard', { products, categories, name ,itemsInCart})
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(err)
+            })
     }
 
     static editProfile(req, res) {
-        const UserId=req.session.userId
+        const UserId = req.session.userId
         Profile.findOne({
-            where:{
+            where: {
                 UserId
             }
         })
-        .then(profile=>{
-            res.render('buyer-edit-profile',{profile})
-        })
-        .catch(err=>{
-           res.send(err)
-           console.log(err); 
-        })  
+            .then(profile => {
+                res.render('buyer-edit-profile', { profile })
+            })
+            .catch(err => {
+                res.send(err)
+                console.log(err);
+            })
     }
 
     static editProfilePost(req, res) {
-        const UserId=req.session.userId
-        const {name,address,email,phoneNumber}=req.body
+        const UserId = req.session.userId
+        const { name, address, email, phoneNumber } = req.body
         Profile.update({
             name,
             address,
@@ -181,43 +180,43 @@ class Controller {
             phoneNumber,
             // UserId=id?
         },
-        {
-            where: {
-                UserId
-            }
-        })
-        .then(_=>{
-            res.redirect('/buyer/dashboard')
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send(err)
-        })
+            {
+                where: {
+                    UserId
+                }
+            })
+            .then(_ => {
+                res.redirect('/buyer/dashboard')
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(err)
+            })
     }
 
     static checkout(req, res) {
-        res.render('buyer-checkout')
+       
     }
 
     static productDetail(req, res) {
-        const {id}=req.params
+        const { id } = req.params
         Product.findByPk(id)
-        .then(product=>{
-            res.render('product-detail')
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send(err)
-        })
+            .then(product => {
+                res.render('product-detail')
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(err)
+            })
     }
 
     static cart(req, res) {
-        const {cart}=req.session
-        let totalPrice=0
+        const { cart } = req.session
+        let totalPrice = 0
         cart.forEach(el => {
-            totalPrice+= +el.price*el.quantity
+            totalPrice += +el.price * el.quantity
         });
-        res.render('buyer-cart',{cart,totalPrice ,rupiahFormat})
+        res.render('buyer-cart', { cart, totalPrice, rupiahFormat })
     }
 
     static payment(req, res) {
@@ -232,11 +231,11 @@ class Controller {
         res.render('buyer-transactions')
     }
 
-    static logout(req,res){
+    static logout(req, res) {
         req.session.destroy((err) => {
-            if(err){
+            if (err) {
                 res.send(err)
-            } else{
+            } else {
                 res.redirect('/')
             }
         })
