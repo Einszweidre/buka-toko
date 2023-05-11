@@ -2,7 +2,6 @@ const router = require('express').Router()
 const Controller = require('../controllers/controller')
 
 router.get("/", Controller.showHome)
-router.post("/",Controller.loginPost)
 router.get("/register", Controller.registerForm)
 router.post("/register", Controller.registerPost)
 router.use("/buyer", require("./buyer"))
