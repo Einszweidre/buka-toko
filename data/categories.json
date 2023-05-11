@@ -1,0 +1,14 @@
+[
+	{
+		"id" : 1,
+		"name" : "Fashion",
+		"createdAt" : "2023-05-11T09:26:16.898Z",
+		"updatedAt" : "2023-05-11T09:26:16.898Z"
+	},
+	{
+		"id" : 2,
+		"name" : "Electronic",
+		"createdAt" : "2023-05-11T09:26:40.216Z",
+		"updatedAt" : "2023-05-11T09:26:40.216Z"
+	}
+]

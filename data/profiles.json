@@ -1,0 +1,22 @@
+[
+	{
+		"id" : 1,
+		"name" : "Budi",
+		"address" : "Jl. Panjang No.1",
+		"email" : "budi@tokobuka.com",
+		"phoneNumber" : "087428741234",
+		"UserId" : 1,
+		"createdAt" : "2023-05-11T09:30:11.816Z",
+		"updatedAt" : "2023-05-11T09:30:11.816Z"
+	},
+	{
+		"id" : 2,
+		"name" : "Joko",
+		"address" : "Jl. Merdeka No.1",
+		"email" : "joko@tokobuka.com",
+		"phoneNumber" : "087412347878",
+		"UserId" : 2,
+		"createdAt" : "2023-05-11T09:31:01.291Z",
+		"updatedAt" : "2023-05-11T09:31:01.291Z"
+	}
+]
