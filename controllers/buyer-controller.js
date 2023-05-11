@@ -16,8 +16,21 @@ class Controller {
                 if (user) {
                     const compare = bcrypt.compareSync(password, user.password)
                     if (compare) {
-                        res.redirect('/') //buyer atau seler role
+                        return Profile.findOne({
+                            where:{
+                                UserId:user.id
+                            }
+                        })
+                    } else {
+
                     }
+                }
+            })
+            .then(profile=>{
+                if(!profile){
+                    res.redirect('/profile/add')
+                } else {
+                    res.redirect('/dashboard')
                 }
             })
             .catch((err) => {
@@ -26,24 +39,57 @@ class Controller {
             })
     }
 
-    static buyerDashboard(req, res) {
-        let user
-        User.findOne()
-        .then(userFound=>{
-            user=userFound
-           return Category.findAll({
-                include: Product,
-            })
+    static addProfile(req, res) {
+        User.findByPk(id)
+        .then(user=>{
+            res.render('add-profile',{user})
         })
-        .then((Product)=>{
-            res.render('buyer-dashboard', { Product,user })
+        .catch((err) => {
+            console.log(err);
+            res.send(err)
         })
     }
 
-    static buyerProfile(req, res) {
-        Profile.findByPk('id?')
-        .then(profile=>{
-            res.render('buyer-profile',{profile})
+    static addProfilePost(req, res) {
+        const {UserId,name,address,email,phoneNumber}=req.body
+        Profile.create({
+            name,
+            address,
+            email,
+            phoneNumber,
+            UserId
+        })
+        .then(_=>{
+            res.redirect('/dashboard')
+        })
+        .catch((err) => {
+            console.log(err);
+            res.send(err)
+        })
+    }
+
+    static buyerDashboard(req, res) {
+        let user
+        let categories
+        User.findByPk(id)
+        .then(userFound=>{
+            user=userFound
+           return Category.findAll()
+        })
+        .then((categoriesList)=>{
+            categories=categoriesList
+            let option={}
+            if (req.query.CategoryId) {
+                const { CategoryId } = req.query
+                option.where = {
+                    CategoryId
+                }
+            }
+            console.log(option);
+            return Product.findAll(option)
+        })
+        .then((products)=>{
+            res.render('buyer-dashboard', { products,categories,user })
         })
         .catch((err) => {
             console.log(err);
@@ -52,12 +98,19 @@ class Controller {
     }
 
     static editProfile(req, res) {
-        res.render('buyer-edit-profile')
+        Profile.findByPk(id)
+        .then(profile=>{
+            res.render('buyer-edit-profile',{profile})
+        })
+        .catch(err=>{
+           res.send(err)
+           console.log(err); 
+        })  
     }
 
-    static profilePost(req, res) {
+    static editProfilePost(req, res) {
         const {name,address,email,phoneNumber}=req.body
-        Profile.create({
+        Profile.update({
             name,
             address,
             email,
@@ -82,6 +135,10 @@ class Controller {
         Product.findByPk(id)
         .then(product=>{
             res.render('product-detail')
+        })
+        .catch((err) => {
+            console.log(err);
+            res.send(err)
         })
     }
 

@@ -14,43 +14,35 @@
     </div>
    
     <div>
-        <a href="/buyer/profile"><button class="btn" >View profile</button></a>
+        <a href="/buyer/profile/edit"><button class="btn" >Edit Profile</button></a>
     </div>
     <div>
         <a href="/buyer/cart"><button>Cart</button></a> 
         <a href="/buyer/transactions"><button>Transactions</button></a>
+    </div><br>
+    <div>
+        <form action="/buyer/dashboard" method="get">
+            <a>
+                <select name="CategoryId" id="">
+                    <option disabled selected>Category</option>
+                    <% categories.forEach(el => { %>
+                        <option value=<%=el.id%>><%= el.name %></option>
+                    <% }) %>
+                </select>
+            </a>
+            <a> <button class="btnFilter" type="submit">Sort</button></a>
+        </form>
     </div>
     <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Product Picture</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (Product.length>1) { %>
-                    <% Product.forEach(el => { %>
-                        <tr>
-                            <td><%=el.name%></td>
-                            <td><%='-'%></td>
-                            <td><%=el.price%></td>
-                            <td>
-                                <a href="/productdetail/<%=el.id%>"><button>Detail product</button></a>
-                                <a href="/"><button>Add to cart</button></a>
-                            </td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                     <td>-</td>
-                     <td>-</td>
-                     <td>-</td>
-                     <td>-</td>
-                <% } %>  
-            </tbody>
-        </table>
+        <% products.forEach(el => { %>
+            <div class="card">
+                <h2><%= el.name %></h2>
+                <img src="https://media.suara.com/suara-partners/metro/thumbs/653x367/2023/03/02/1-hotman-paris.jpg" alt="" width=200></img>
+                <p>Price: <%- el.price %></p>
+                <a href="/productdetail/<%=el.id%>"><button>Detail product</button></a>
+                <a href="/"><button>Add to cart</button></a>
+            </div>
+        <% }) %>
     </div>
 </body>
 </html>
