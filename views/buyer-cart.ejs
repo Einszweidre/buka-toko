@@ -18,15 +18,23 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <% cart.forEach(el => { %>
+              <% cart.forEach((el,index )=> { %>
                   <tr>
                       <th><%=el.name%></th>
                       <th><%=rupiahFormat(+el.price)%></th>
-                      <th><%=el.quantity  %></th>
-                      <th><%=rupiahFormat(el.quantity*el.price )%></th>
+                      <th style="width: 22%;"><form action="/buyer/cart" method="post">
+                        <input type="hidden" name="index" value="<%= index %>">
+                        <input style="width: 40%;" type="number" id="quantity" name="quantity" value="<%=el.quantity%>">
+                        <button type="submit">Set Quantity</button>
+                      </form></th>
+                      <th><%=rupiahFormat(el.quantity*el.price)%></th>
+                      <th>
+                        <a href="/buyer/cart/delete/?item=<%=el.name%>"><button>Delete Item</button></a> 
+                      </th>
                     </tr>
               <% }) %>
             </tbody>
@@ -34,10 +42,13 @@
               <tr>
                 <td colspan="3" class="total">Total:</td>
                 <td><%= rupiahFormat(totalPrice) %></td>
+                <td></td>
               </tr>
             </tfoot>
           </table>
-          <button>Checkout</button>
+    </div>
+    <div>
+      <a href="/buyer/checkout"><button>Checkout</button></a> 
     </div>
 </body>
 </html>

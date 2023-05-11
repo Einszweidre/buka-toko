@@ -18,6 +18,10 @@ class Controller {
                 if (user) {
                     const compare = bcrypt.compareSync(password, user.password)
                     if (compare) {
+                        if(user.role !== "Buyer"){
+                            const error = "not a buyer account"
+                            return res.redirect(`/buyer?error=${error}`)
+                        }
                         req.session.userId = user.id
                         req.session.role = user.role
                         return Profile.findOne({
@@ -26,9 +30,12 @@ class Controller {
                             }
                         })
                     } else {
-                        const error = "username not found"
+                        const error = "invalid password"
                         return res.redirect(`/buyer?error=${error}`)
                     }
+                } else {
+                    const error = "username not found"
+                    return res.redirect(`/buyer?error=${error}`)
                 }
             })
             .then(profile=>{
@@ -96,6 +103,20 @@ class Controller {
         }
     }
 
+    static updateQuantity(req, res) {
+        let {cart}=req.session
+        const{quantity,index}=req.body
+        cart[index].quantity=quantity
+        res.redirect('/buyer/cart')
+    }
+
+    static deleteCart(req, res) {
+       const deleteItem=req.query.item
+       let {cart}=req.session
+       req.session.cart=cart.filter(el=>el.name!==deleteItem)
+       res.redirect('/buyer/cart')
+    }
+
     static buyerDashboard(req, res) {
         //cart
         if (req.session.cart) {
@@ -151,6 +172,7 @@ class Controller {
     }
 
     static editProfilePost(req, res) {
+        const UserId=req.session.userId
         const {name,address,email,phoneNumber}=req.body
         Profile.update({
             name,
@@ -158,9 +180,14 @@ class Controller {
             email,
             phoneNumber,
             // UserId=id?
+        },
+        {
+            where: {
+                UserId
+            }
         })
         .then(_=>{
-            res.redirect('/profile')
+            res.redirect('/buyer/dashboard')
         })
         .catch((err) => {
             console.log(err);
