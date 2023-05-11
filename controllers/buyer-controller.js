@@ -1,4 +1,5 @@
 const { Product, Category,Profile,Transaction,ProductsTransaction,User } = require('../models')
+const bcrypt = require('bcrypt')
 
 class Controller {
     static buyerHome(req, res) {
@@ -16,21 +17,24 @@ class Controller {
                 if (user) {
                     const compare = bcrypt.compareSync(password, user.password)
                     if (compare) {
+                        req.session.userId = user.id
+                        req.session.role = user.role
                         return Profile.findOne({
                             where:{
                                 UserId:user.id
                             }
                         })
                     } else {
-
+                        const error = "username not found"
+                        return res.redirect(`/buyer?error=${error}`)
                     }
                 }
             })
             .then(profile=>{
                 if(!profile){
-                    res.redirect('/profile/add')
+                    res.redirect('/buyer/profile/add')
                 } else {
-                    res.redirect('/dashboard')
+                    res.redirect('/buyer/dashboard')
                 }
             })
             .catch((err) => {
@@ -40,9 +44,10 @@ class Controller {
     }
 
     static addProfile(req, res) {
+        const id=req.session.userId
         User.findByPk(id)
         .then(user=>{
-            res.render('add-profile',{user})
+            res.render('add-profile',{user,id})
         })
         .catch((err) => {
             console.log(err);
@@ -51,7 +56,8 @@ class Controller {
     }
 
     static addProfilePost(req, res) {
-        const {UserId,name,address,email,phoneNumber}=req.body
+        const UserId=req.session.userId
+        const {name,address,email,phoneNumber}=req.body
         Profile.create({
             name,
             address,
@@ -60,7 +66,7 @@ class Controller {
             UserId
         })
         .then(_=>{
-            res.redirect('/dashboard')
+            res.redirect('/buyer/dashboard')
         })
         .catch((err) => {
             console.log(err);
@@ -69,6 +75,7 @@ class Controller {
     }
 
     static buyerDashboard(req, res) {
+        const id=req.session.userId
         let user
         let categories
         User.findByPk(id)
@@ -98,7 +105,12 @@ class Controller {
     }
 
     static editProfile(req, res) {
-        Profile.findByPk(id)
+        const UserId=req.session.userId
+        Profile.findOne({
+            where:{
+                UserId
+            }
+        })
         .then(profile=>{
             res.render('buyer-edit-profile',{profile})
         })
@@ -156,6 +168,16 @@ class Controller {
 
     static transactions(req, res) {
         res.render('buyer-transactions')
+    }
+
+    static logout(req,res){
+        req.session.destroy((err) => {
+            if(err){
+                res.send(err)
+            } else{
+                res.redirect('/')
+            }
+        })
     }
 }
 

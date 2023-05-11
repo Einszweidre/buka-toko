@@ -3,7 +3,7 @@ const bcrypt=require('bcrypt')
 
 class Controller{
     static showHome(req, res){ // jadiin tempat login sekalian kah ?
-        res.render('home copy')
+        res.render('home')
     }
 
     static registerForm(req, res){
