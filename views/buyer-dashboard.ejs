@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <%- include('./partials/style.ejs') %>
+</head>
+<body>
+    <%- include('./partials/header-buyer.ejs') %>
+    <div>
+        <h2>Dashboard</h2>
+    </div>
+   
+    <div>
+        <a href="/profile"><button class="btn" >View profile</button></a>
+    </div>
+    <div>
+        <a href="/cart"><button>Cart</button></a> 
+        <a href="transactions"><button>Transactions</button></a>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Picture</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (Product.length>1) { %>
+                    <% Product.forEach(el => { %>
+                        <tr>
+                            <td><%=el.name%></td>
+                            <td><%='-'%></td>
+                            <td><%=el.price%></td>
+                            <td>
+                                <a href="/productdetail/<%=el.id%>"><button>Detail product</button></a>
+                                <a href="/"><button>Add to cart</button></a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                     <td>-</td>
+                     <td>-</td>
+                     <td>-</td>
+                     <td>-</td>
+                <% } %>  
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
