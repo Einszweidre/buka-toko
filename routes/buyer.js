@@ -23,8 +23,6 @@ router.post("/cart", Controller.updateQuantity)
 router.get("/cart/delete", Controller.deleteCart)
 router.get("/productdetail/:id", Controller.productDetail)
 router.get("/checkout", Controller.checkout)
-router.get("/payment", Controller.payment)
 router.get("/transactions", Controller.transactions)
-router.post("/payment", Controller.paymentPost)
 router.get("/logout", Controller.logout)
 module.exports = router

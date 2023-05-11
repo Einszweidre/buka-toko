@@ -1,4 +1,5 @@
 'use strict';
+const padNumber=require('../helpers/padNumber')
 const {
   Model
 } = require('sequelize');
@@ -30,5 +31,14 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Transaction',
   });
+
+  Transaction.beforeCreate((transaction) => {
+    const date = new Date();
+    const userId = transaction.UserId; // replace with the actual user ID
+    const transactionCode = `TR${userId}${date.getFullYear()}${padNumber(date.getMonth() + 1)}${padNumber(date.getDate())}${padNumber(date.getHours())}${padNumber(date.getMinutes())}${padNumber(date.getSeconds())}${padNumber(date.getMilliseconds(), 3)}`;
+
+    transaction.transactionCode = transactionCode
+  })
+
   return Transaction;
 };
