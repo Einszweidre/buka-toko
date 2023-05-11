@@ -42,16 +42,25 @@ class Controller{
 
     static sellerDashboard(req,res){
         const id = req.session.userId
-        Product.findAll({
+        const CategoryId = req.query.CategoryId
+        const options ={
             where:{
                 SellerId: id
             },
             include:{
                 model: Category
             }
-        })
+        }
+        if(CategoryId){
+            options.where.CategoryId = CategoryId
+        }
+
+        Product.findAll(options)
         .then((products)=>{
-            res.render('seller-dashboard', {products, rupiah})
+            Category.findAll()
+            .then((categories) => {
+                res.render('seller-dashboard', {products, categories, rupiah})
+            })
         })
         .catch((err) => {
             console.log(err)
@@ -60,7 +69,29 @@ class Controller{
     }
 
     static transactionList(req, res){
-        
+        const id = req.session.userId
+        Transaction.findAll({
+            include:{
+                model: ProductsTransaction,
+                include:{
+                    model:Product,
+                    where:{
+                        SellerId: id
+                    }
+                }
+            },
+            where:{
+                status: "Paid"
+            }
+        })
+        .then((transactions) => {
+            res.send(transactions)
+            res.render('transactions', {transactions})
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
     }
 
     static productDetail(req, res){
@@ -71,8 +102,7 @@ class Controller{
             }
         })
         .then((product)=>{
-            res.send(product)
-            res.render('product-detail', {product, rupiah})
+            res.render('seller-product-detail', {product, rupiah})
         })
         .catch((err) => {
             console.log(err)
@@ -141,8 +171,20 @@ class Controller{
         })
     }
 
-    static transactionList(req, res){
-
+    static deleteProduct(req, res){
+        const id = req.params.id
+        Product.destroy({
+            where:{
+                id: id
+            }
+        })
+        .then(() => {
+            res.redirect("/seller/dashboard")
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
     }
 
     static logout(req,res){

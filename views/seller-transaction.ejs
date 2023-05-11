@@ -15,18 +15,6 @@
     <button onclick="window.location.href='/seller/transaction'">Transaction List</button>
     <br><br>
 
-    <form action="/seller/dashboard" method="get">
-        <p style="width: 20%;">
-            <select name="CategoryId">
-                <option disabled selected>Category</option>
-                <% categories.forEach(element => { %>
-                    <option value=<%=element.id%>><%= element.name %></option>
-                <% }) %>
-            </select>
-            <a> <button class="btnFilter" type="submit">Sort</button></a>
-        </p>
-    </form>
-
     <table id="products">
         <tr>
             <th>#</th>
