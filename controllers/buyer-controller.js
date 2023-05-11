@@ -21,6 +21,8 @@ class Controller {
                                 UserId:user.id
                             }
                         })
+                    } else {
+
                     }
                 }
             })
@@ -38,7 +40,7 @@ class Controller {
     }
 
     static addProfile(req, res) {
-        User.findByPk()
+        User.findByPk(id)
         .then(user=>{
             res.render('add-profile',{user})
         })
@@ -58,7 +60,7 @@ class Controller {
             UserId
         })
         .then(_=>{
-            res.redirect('/profile')
+            res.redirect('/dashboard')
         })
         .catch((err) => {
             console.log(err);
@@ -69,7 +71,7 @@ class Controller {
     static buyerDashboard(req, res) {
         let user
         let categories
-        User.findOne()
+        User.findByPk(id)
         .then(userFound=>{
             user=userFound
            return Category.findAll()
@@ -96,7 +98,7 @@ class Controller {
     }
 
     static editProfile(req, res) {
-        Profile.findByPk()
+        Profile.findByPk(id)
         .then(profile=>{
             res.render('buyer-edit-profile',{profile})
         })
