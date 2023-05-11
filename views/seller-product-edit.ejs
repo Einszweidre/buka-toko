@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <%- include('./partials/style.ejs') %>
+</head>
+<body>
+    <%- include('./partials/header.ejs') %>
+    <div>
+        <h2>Add Product</h2>
+    </div>
+    <div>
+        <form action="/seller/product/edit/<%= product.id %>" method="post">
+            <div>
+                <p>
+                    <label for="name">Name:</label><br>
+                    <input type="text" id="name" name="name" value="<%= product.name %>">
+                </p>
+                <p>
+                    <label for="description">Description: </label><br>
+                    <textarea id="description" name="description" rows="3" cols="60" ><%= product.description %></textarea>
+                </p>
+                <p>
+                    <label for="price">Price:</label><br>
+                    <input type="number" id="price" name="price" value="<%= product.price %>">
+                </p>
+                <p>
+                    <label for="CategoryId">Category:</label><br>
+                    <select name="CategoryId">
+                        <% categories.forEach(element => { %>
+                            <% if (product.CategoryId === element.id) { %>
+                                <option value="<%= element.id %>" selected><%= element.name %></option>
+                            <% } else{ %>
+                                <option value="<%= element.id %>"><%= element.name %></option>
+                            <% } %>
+                        <% }) %>
+                    </select>
+                </p>
+                <p>
+                    <label for="picture">Picture Link:</label><br>
+                    <input type="text" id="picture" name="picture" value="<%= product.picture %>">
+                </p>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

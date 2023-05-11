@@ -41,7 +41,11 @@ class Controller{
     }
 
     static sellerDashboard(req,res){
+        const id = req.session.userId
         Product.findAll({
+            where:{
+                SellerId: id
+            },
             include:{
                 model: Category
             }
@@ -56,12 +60,12 @@ class Controller{
     }
 
     static transactionList(req, res){
-
+        
     }
 
     static productDetail(req, res){
         const id = req.params.id
-        Product.findOne(id,{
+        Product.findByPk(id,{
             include:{
                 model: Category
             }
@@ -89,8 +93,8 @@ class Controller{
 
     static createProduct(req, res){
         const {name, description, price, CategoryId, picture} = req.body
-        const SellerId = req.session.UserId
-        Product.create({name, description, price,SellerId, CategoryId, picture})
+        const SellerId = req.session.userId
+        Product.create({name, description, price ,SellerId , CategoryId, picture})
         .then(()=>{
             res.redirect("/seller/dashboard")
         })
@@ -101,11 +105,40 @@ class Controller{
     }
 
     static editProduct(req, res){
-
+        const id = req.params.id
+        Product.findByPk(id, {
+            include:{
+                model: Category
+            }
+        })
+        .then((product) => {
+            Category.findAll()
+            .then((categories) => {
+                res.render("seller-product-edit", {product, categories})
+            })
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
     }
 
     static postProduct(req, res){
-
+        const {name, description, price, CategoryId, picture} = req.body
+        const SellerId = req.session.userId
+        const id = req.params.id
+        Product.update({name, description, price ,SellerId , CategoryId, picture},{
+            where:{
+                id: id
+            }
+        })
+        .then(()=>{
+            res.redirect("/seller/dashboard")
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
     }
 
     static transactionList(req, res){
