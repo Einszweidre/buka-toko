@@ -17,7 +17,10 @@ class Controller{
                 if(user){
                     const compare=bcrypt.compareSync(password,user.password)
                     if(compare){
-
+                        if(user.role !== "Seller"){
+                            const error = "not a seller account"
+                            return res.redirect(`/seller?error=${error}`)
+                        }
                         req.session.userId = user.id
                         req.session.role = user.role
                         return res.redirect('/seller/dashboard') //buyer atau seller role
