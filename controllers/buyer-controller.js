@@ -1,6 +1,6 @@
 class Controller{
     static buyerHome(req, res){
-
+        
     }
 }
 

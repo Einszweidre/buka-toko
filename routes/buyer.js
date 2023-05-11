@@ -1,6 +1,5 @@
-const express = require('express')
+const router = require('express').Router()
 const Controller = require('../controllers/buyer-controller')
-const router = express()
 
 router.get("/", Controller.buyerHome)
 

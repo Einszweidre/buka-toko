@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Register</title>
     <%- include('./partials/style.ejs') %>
 </head>
 <body>
     <%- include('./partials/header.ejs') %>
     <div>
-        <h2>Home</h2>
+        <h2>Register</h2>
     </div>
     <div>
-        <form action="/" method="post">
+    </div>
+    <div>
+        <form action="/register" method="post">
             <div>
                 <p>
                     <label for="username">Username</label><br>
@@ -23,12 +25,17 @@
                     <label for="password">Password</label><br>
                     <input type="text" id="password" name="password">
                 </p>
-                <button class="btn" type="submit">Login</button>
+                <p>
+                    <label for="role">Role</label>
+                    <select name="role" id="role">
+                        <option value="" disabled selected>Choose..</option>
+                        <option value="Seller">Seller</option>
+                        <option value="Buyer">Buyer</option>
+                    </select>
+                </p>
+                <button class="btn" type="submit">Register</button>
             </div>
         </form>
-    </div>
-    <div>
-        <a href="/register"><button class="btn" >Register</button></a>
     </div>
 </body>
 </html>
