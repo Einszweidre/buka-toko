@@ -15,10 +15,54 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Profile.init({
-    name: DataTypes.STRING,
-    address: DataTypes.STRING,
-    email: DataTypes.STRING,
-    phoneNumber: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: `Name cannot be null`
+        },
+        notEmpty: {
+          msg: `Name cannot be empty`
+        }
+      }
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: `Address cannot be null`
+        },
+        notEmpty: {
+          msg: `Address cannot be empty`
+        }
+      }
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: `Email cannot be null`
+        },
+        notEmpty: {
+          msg: `Email cannot be empty`
+        }
+      }
+    },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: `Phone Number cannot be null`
+        },
+        notEmpty: {
+          msg: `Phone Number cannot be empty`
+        }
+      }
+    },
     UserId: DataTypes.INTEGER
   }, {
     sequelize,
