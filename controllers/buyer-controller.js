@@ -23,7 +23,7 @@ class Controller {
                     if (compare) {
                         if (user.role !== "Buyer") {
                             const error = "not a buyer account"
-                             res.redirect(`/buyer?error=${error}`)
+                            res.redirect(`/buyer?error=${error}`)
                         }
                         req.session.userId = user.id
                         req.session.role = user.role
@@ -36,11 +36,11 @@ class Controller {
                         res.redirect('/buyer/dashboard')
                     } else {
                         const error = "invalid password"
-                         res.redirect(`/buyer?error=${error}`)
+                        res.redirect(`/buyer?error=${error}`)
                     }
                 } else {
                     const error = "username not found"
-                     res.redirect(`/buyer?error=${error}`)
+                    res.redirect(`/buyer?error=${error}`)
                 }
             })
             // .then(profile => {
@@ -67,7 +67,7 @@ class Controller {
         const id = req.session.userId
         User.findByPk(id)
             .then(user => {
-                res.render('add-profile', { user, id ,error})
+                res.render('add-profile', { user, id, error })
             })
             .catch((err) => {
                 console.log(err);
@@ -177,10 +177,10 @@ class Controller {
             }
         })
             .then((profile) => {
-                if(!profile){
+                if (!profile) {
                     res.redirect('/buyer/profile/add')
                 } else {
-                    res.render('buyer-edit-profile', { profile ,error})
+                    res.render('buyer-edit-profile', { profile, error })
                 }
             })
             .catch(err => {
@@ -219,41 +219,51 @@ class Controller {
     }
 
     static checkout(req, res) {
+
         const UserId = req.session.userId
-        const address=req.session.address
+        const address = req.session.address
         if (req.session.cart.length > 0) {
-            Transaction.create({
-                paymentDate: new Date(),
-                status:'Paid',
-                UserId,
-                deliveryAddress:address
+            let find
+            Profile.findOne({
+                where: {
+                    UserId,
+                }
             })
-            .then(()=>{
-               return Transaction.findOne({
-                    where: {
+                .then((profile) => {
+                    find = profile
+                    return Transaction.create({
+                        paymentDate: new Date(),
+                        status: 'Paid',
                         UserId,
-                    },
-                    order: [['id', 'DESC']],
-                    limit: 1
+                        deliveryAddress: find.address
+                    })
                 })
-            })
-            .then((transaction)=>{
-                console.log(transaction);
-                const cart=req.session.cart
-                cart.forEach(el => {
-                    el.TransactionId=transaction.id
-                    el.ProductId=el.id
-                    el.amount= +el.quantity * +el.price
-                    delete el.CategoryId
-                    delete el.id
-                    delete el.name
-                }); 
-                return ProductsTransaction.bulkCreate(cart)
-            })
-            .then(()=>{
-                req.session.cart=[]
-                res.redirect('/buyer/dashboard')
-            })
+                .then(() => {
+                    return Transaction.findOne({
+                        where: {
+                            UserId,
+                        },
+                        order: [['id', 'DESC']],
+                        limit: 1
+                    })
+                })
+                .then((transaction) => {
+                    console.log(transaction);
+                    const cart = req.session.cart
+                    cart.forEach(el => {
+                        el.TransactionId = transaction.id
+                        el.ProductId = el.id
+                        el.amount = +el.quantity * +el.price
+                        delete el.CategoryId
+                        delete el.id
+                        delete el.name
+                    });
+                    return ProductsTransaction.bulkCreate(cart)
+                })
+                .then(() => {
+                    req.session.cart = []
+                    res.redirect('/buyer/dashboard')
+                })
         } else {
             const error = "Cart is empty"
             return res.redirect(`/buyer/cart?error=${error}`)
@@ -265,7 +275,7 @@ class Controller {
         const { id } = req.params
         Product.findByPk(id)
             .then(product => {
-                res.render('buyer-product-detail',{product})
+                res.render('buyer-product-detail', { product })
             })
             .catch((err) => {
                 console.log(err);
@@ -285,15 +295,15 @@ class Controller {
     }
 
     static transactions(req, res) {
-        const UserId=req.session.userId
+        const UserId = req.session.userId
         Transaction.findAll({
-            where:{
+            where: {
                 UserId
             }
         })
-        .then((transactions)=>{
-            res.render('buyer-transactions',{transactions})
-        })
+            .then((transactions) => {
+                res.render('buyer-transactions', { transactions })
+            })
     }
 
     static logout(req, res) {
