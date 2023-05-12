@@ -16,6 +16,10 @@ router.use((req, res, next) => {
 })
 
 router.get("/dashboard", Controller.sellerDashboard)
+
+router.get("/profile/add", Controller.addProfile)
+router.post("/profile/add", Controller.createProfile)
+
 router.get("/transaction", Controller.transactionList)
 
 router.get("/product/detail/:id", Controller.productDetail)

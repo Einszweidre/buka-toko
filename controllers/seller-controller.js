@@ -24,7 +24,7 @@ class Controller{
                     }
                     req.session.userId = user.id
                     req.session.role = user.role
-                    return res.redirect('/seller/dashboard') //buyer atau seller role
+                    res.redirect('/seller/dashboard')
                 } else{
                     const error = "invalid password"
                     return res.redirect(`/seller?error=${error}`)
@@ -38,6 +38,37 @@ class Controller{
             console.log(err)
             res.send(err)
         })
+    }
+
+    static addProfile(req, res){
+        const id = req.session.userId
+        User.findByPk(id)
+            .then(user => {
+                res.render('seller-add-profile', { user, id })
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(err)
+            })
+    }
+
+    static createProfile(req, res){
+        const UserId = req.session.userId
+        const { name, address, email, phoneNumber } = req.body
+        Profile.create({
+            name,
+            address,
+            email,
+            phoneNumber,
+            UserId
+        })
+            .then(() => {
+                res.redirect('/seller/dashboard')
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(err)
+            })
     }
 
     static sellerDashboard(req,res){
