@@ -1,6 +1,7 @@
 const { Product, Category,Profile,Transaction,ProductsTransaction,User } = require('../models')
 const bcrypt = require('bcrypt')
 const rupiah = require('../helpers/rupiahFormat')
+const { ValidationError } = require('sequelize')
 
 class Controller{
     static sellerHome(req, res){
@@ -47,7 +48,6 @@ class Controller{
                 res.render('seller-add-profile', { user, id })
             })
             .catch((err) => {
-                console.log(err);
                 res.send(err)
             })
     }
@@ -66,8 +66,12 @@ class Controller{
                 res.redirect('/seller/dashboard')
             })
             .catch((err) => {
-                console.log(err);
-                res.send(err)
+                if(err.name === "SequelizeValidationError"){
+                    const error = err.errors.message
+                    res.send(err)
+                } else{
+                    res.send(err)
+                }
             })
     }
 
