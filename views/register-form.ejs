@@ -13,6 +13,14 @@
         <h2>Register</h2>
     </div>
     <div>
+        <% if (error) { %>
+            <% error.split(',').forEach(el => { %>
+                <p style="color: red;">
+                    <%= el %>
+                </p>
+             <%}); %>
+      
+        <% } %>
     </div>
     <div>
         <form action="/register" method="post">

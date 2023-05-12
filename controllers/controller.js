@@ -7,7 +7,8 @@ class Controller{
     }
 
     static registerForm(req, res){
-        res.render('register-form')
+        const { error } = req.query
+        res.render('register-form',{error})
     }
     static registerPost(req, res){
         const {username,password,role}=req.body
@@ -20,8 +21,13 @@ class Controller{
             res.redirect('/')
         })
         .catch((err) => {
-            res.send(err)
-            console.log(err);
+            if (err.name === 'SequelizeValidationError') {
+                const errors = err.errors.map((el) => el.message)
+                res.redirect(`/register?error=${errors}`)
+            } else {
+                console.log(err);
+                res.send(err)
+            }
         })
     }
 
