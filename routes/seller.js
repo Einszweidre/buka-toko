@@ -28,6 +28,8 @@ router.post("/product/edit/:id", Controller.postProduct)
 
 router.get("/product/delete/:id", Controller.deleteProduct)
 
+router.get("/product/deliver/:id", Controller.deliverProduct)
+
 router.get("/logout", Controller.logout)
 
 

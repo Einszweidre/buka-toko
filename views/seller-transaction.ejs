@@ -18,22 +18,34 @@
     <table id="products">
         <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Category</th>
+            <th>Transaction Code</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Delivery Address</th>
             <th>Action</th>
         </tr>
-        <% products.forEach((element, index) => { %>
+        <% transactions.forEach((element, index) => { %>
             <tr>
                 <td><%= ++index %></td>
-                <td><%= element.name %></td>
-                <td><%= rupiah(element.price) %></td>
-                <td><%= element.Category.name %></td>
-                <td>
-                    <button onclick="window.location.href='/seller/product/detail/<%= element.id %>'">Detail</button>
-                    <button onclick="window.location.href='/seller/product/edit/<%= element.id %>'">Edit</button>
-                    <button onclick="window.location.href='/seller/product/delete/<%= element.id %>'">Delete</button>
-                </td>
+                <td><%= element.transactionCode %></td>
+                <td><%= element.status %></td>
+
+                <% let total = 0 %>
+                <% element.ProductsTransactions.forEach(el => {
+                    total += (el.amount*el.quantity)
+                 }) %>
+                
+                <td><%= rupiah(total) %></td>
+                <td><%= element.deliveryAddress %></td>
+                <% if (element.status === "Paid") { %>
+                    <td>
+                        <button onclick="window.location.href='/seller/product/deliver/<%= element.id %>'">Deliver</button>
+                    </td>
+                <% } else{ %>
+                    <td>
+                        
+                    </td>
+                <% }%>
             </tr>
         <% }) %>
     </table>

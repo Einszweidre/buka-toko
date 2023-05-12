@@ -79,14 +79,11 @@ class Controller{
                         SellerId: id
                     }
                 }
-            },
-            where:{
-                status: "Paid"
             }
         })
         .then((transactions) => {
-            res.send(transactions)
-            res.render('transactions', {transactions})
+            // res.send(transactions)
+            res.render('seller-transaction', {transactions, rupiah})
         })
         .catch((err) => {
             console.log(err)
@@ -180,6 +177,26 @@ class Controller{
         })
         .then(() => {
             res.redirect("/seller/dashboard")
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
+    }
+
+    static deliverProduct(req, res){
+        const id = req.params.id
+        console.log(id)
+        Transaction.update({
+            deliveredDate: new Date(),
+            status: "Completed"
+        }, {
+            where:{
+                id: id
+            }
+        })
+        .then(() => {
+            res.redirect("/seller/transaction")
         })
         .catch((err) => {
             console.log(err)
