@@ -28,11 +28,12 @@ class Controller {
                         req.session.userId = user.id
                         req.session.role = user.role
                         req.session.name = user.username
-                        return Profile.findOne({
-                            where: {
-                                UserId: user.id
-                            } 
-                        })
+                        // return Profile.findOne({
+                        //     where: {
+                        //         UserId: user.id
+                        //     } 
+                        // })
+                        res.redirect('/buyer/dashboard')
                     } else {
                         const error = "invalid password"
                          res.redirect(`/buyer?error=${error}`)
@@ -42,25 +43,31 @@ class Controller {
                      res.redirect(`/buyer?error=${error}`)
                 }
             })
-            .then(profile => {
-                if (!profile) {
-                    res.redirect('/buyer/profile/add')
-                } else {
-                    req.session.address=profile.address
-                    res.redirect('/buyer/dashboard')
-                }
-            })
+            // .then(profile => {
+            //     if (!profile) {
+            //         res.redirect('/buyer/profile/add')
+            //     } else {
+            //         req.session.address=profile.address
+            //         res.redirect('/buyer/dashboard')
+            //     }
+            // })
             .catch((err) => {
-                console.log(err);
-                res.send(err)
+                if (err.name === 'SequelizeValidationError') {
+                    const errors = err.errors.map((el) => el.message)
+                    res.redirect(`/buyer?error=${errors}`)
+                } else {
+                    console.log(err);
+                    res.send(err)
+                }
             })
     }
 
     static addProfile(req, res) {
+        const { error } = req.query
         const id = req.session.userId
         User.findByPk(id)
             .then(user => {
-                res.render('add-profile', { user, id })
+                res.render('add-profile', { user, id ,error})
             })
             .catch((err) => {
                 console.log(err);
@@ -82,8 +89,13 @@ class Controller {
                 res.redirect('/buyer/dashboard')
             })
             .catch((err) => {
-                console.log(err);
-                res.send(err)
+                if (err.name === 'SequelizeValidationError') {
+                    const errors = err.errors.map((el) => el.message)
+                    res.redirect(`/buyer/profile/add?error=${errors}`)
+                } else {
+                    console.log(err);
+                    res.send(err)
+                }
             })
     }
 
@@ -157,14 +169,19 @@ class Controller {
     }
 
     static editProfile(req, res) {
+        const { error } = req.query
         const UserId = req.session.userId
         Profile.findOne({
             where: {
                 UserId
             }
         })
-            .then(profile => {
-                res.render('buyer-edit-profile', { profile })
+            .then((profile) => {
+                if(!profile){
+                    res.redirect('/buyer/profile/add')
+                } else {
+                    res.render('buyer-edit-profile', { profile ,error})
+                }
             })
             .catch(err => {
                 res.send(err)
@@ -191,8 +208,13 @@ class Controller {
                 res.redirect('/buyer/dashboard')
             })
             .catch((err) => {
-                console.log(err);
-                res.send(err)
+                if (err.name === 'SequelizeValidationError') {
+                    const errors = err.errors.map((el) => el.message)
+                    res.redirect(`/buyer/profile/edit?error=${errors}`)
+                } else {
+                    console.log(err);
+                    res.send(err)
+                }
             })
     }
 

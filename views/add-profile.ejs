@@ -8,11 +8,19 @@
     <%- include('./partials/style.ejs') %>
 </head>
 <body>
-    <%- include('./partials/header.ejs') %>
+    <%- include('./partials/header-buyer.ejs') %>
     <div>
         <h2>Add Profile</h2>
     </div>
     <div>
+        <% if (error) { %>
+            <% error.split(',').forEach(el => { %>
+                <p style="color: red;">
+                    <%= el %>
+                </p>
+             <%}); %>
+      
+        <% } %>
         <form action="/buyer/profile/add" method="post">
             <div>
                 <p>
