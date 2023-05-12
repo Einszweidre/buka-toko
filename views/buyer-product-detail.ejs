@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Product</title>
+    <%- include('./partials/style.ejs') %>
+</head>
+<body>
+    <%- include('./partials/header-buyer.ejs') %>
+    <section style=" width:max-content; margin:0 auto;">
+        
+        <div>
+            <h2>Detail Product</h2>
+        </div>
+        <div>
+                    <h3><%=product.name  %></h3>
+                    <img src="<%= product.picture %>" alt="" ></img>
+                    <h4><%= product.rupiahFormat %></h4>
+                    <p>
+                        <%= product.description %>
+                    </p>
+                    
+        </div>
+        <div>
+            <form action="/buyer/dashboard" method="post">
+                <div>
+                    <input type="hidden" name="name" value="<%= product.name %>">
+                    <input type="hidden" name="price" value="<%=product.price  %>">
+                    <input type="hidden" name="id" value="<%=product.id  %>">
+                    <input type="hidden" name="CategoryId" value="<%= product.CategoryId %>">
+                    <button type="submit">Add to cart</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    
+</body>
+</html>

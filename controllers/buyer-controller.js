@@ -202,7 +202,7 @@ class Controller {
         if (req.session.cart.length > 0) {
             Transaction.create({
                 paymentDate: new Date(),
-                status:'Pending',
+                status:'Paid',
                 UserId,
                 deliveryAddress:address
             })
@@ -229,7 +229,8 @@ class Controller {
                 return ProductsTransaction.bulkCreate(cart)
             })
             .then(()=>{
-                res.redirect('/buyer/payment')
+                req.session.cart=[]
+                res.redirect('/buyer/dashboard')
             })
         } else {
             const error = "Cart is empty"
@@ -242,7 +243,7 @@ class Controller {
         const { id } = req.params
         Product.findByPk(id)
             .then(product => {
-                res.render('product-detail')
+                res.render('buyer-product-detail',{product})
             })
             .catch((err) => {
                 console.log(err);
@@ -262,7 +263,15 @@ class Controller {
     }
 
     static transactions(req, res) {
-        res.render('buyer-transactions')
+        const UserId=req.session.userId
+        Transaction.findAll({
+            where:{
+                UserId
+            }
+        })
+        .then((transactions)=>{
+            res.render('buyer-transactions',{transactions})
+        })
     }
 
     static logout(req, res) {

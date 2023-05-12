@@ -40,7 +40,7 @@
                 <h2><%= el.name %></h2>
                 <img src="<%= el.picture %>" alt="" ></img>
                 <p>Price: <%- el.rupiahFormat %></p>
-                <a href="/productdetail/<%=el.id%>"><button>Detail product</button></a>
+                <a href="/buyer/productdetail/<%=el.id%>"><button>Detail product</button></a>
                 <form action="/buyer/dashboard" method="post">
                     <div>
                         <input type="hidden" name="name" value="<%= el.name %>">

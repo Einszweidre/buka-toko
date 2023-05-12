@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Page</title>
+    <%- include('./partials/style.ejs') %>
+</head>
+<body>
+    <%- include('./partials/header-buyer.ejs') %>
+    <div>
+        <table>
+            <thead>
+              <tr>
+                <th>Transaction Code</th>
+                <th>Payment Date</th>
+                <th>Delivered Date</th>
+                <th>Status</th>
+                <th>Delivery Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% transactions.forEach((el,index )=> { %>
+                  <tr>
+                      <th><%=el.transactionCode%></th>
+                      <th><%=el.paymentDate%></th>
+                      <th><%=el.deliveredDate%></th>
+                      <th><%=el.status%></th>
+                      <th><%=el.deliveryAddress%></th>
+                    </tr>
+              <% }) %>
+            </tbody>
+          </table>
+    </div>
+</body>
+</html>
